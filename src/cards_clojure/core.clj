@@ -10,7 +10,7 @@
     (for [suit suits
           rank ranks]
       {:suit suit
-       :rank (get rank-names rank rank)})))
+       :rank rank})))
 
 (defn create-hands [deck]
   (set
@@ -21,11 +21,17 @@
       #{c1 c2 c3 c4})))
       
 (defn flush? [hand]
-  (= 1 (count (set (map :suit hand)))))      
-
+  (= 1 (count (set (map :suit hand)))))   
+(defn straight? [hand]
+  (let [hand-ranks (sort (map :rank hand))
+        first (first hand-ranks)
+        last (last hand-ranks)]
+    (= 3 (- last first))))
+(defn straight-flush? [hand]
+  (and (straight? hand) (flush? hand)))
 (defn -main []
-  (time
     (let [deck (create-deck)
           hands (create-hands deck)
-          flush-hands (filter flush? hands)]
-      (count flush-hands))))
+          flush-hands (filter straight-flush? hands)]
+      (println (count flush-hands))))
+    
