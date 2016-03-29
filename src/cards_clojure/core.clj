@@ -36,15 +36,15 @@
 
 (defn three-of-a-kind? [hand]
   (let [freq-vals (set (vals (frequencies (map :rank hand))))]
-    (and (not= (first freq-vals) (last freq-vals)) (= 4 (+ (first freq-vals) (last freq-vals))))))
+    (contains? freq-vals 3)))
 
 (defn two-of-a-kind? [hand]
   (let [freq-vals (set (vals (frequencies (map :rank hand))))]
-    (= 3 (+ (first freq-vals) (last freq-vals)))))
+    (= 3 (apply + freq-vals))))
 
 (defn two-pair? [hand]
-  (let [freq-vals (set (vals (frequencies (map :rank hand))))]
-    (and (= 2 (first freq-vals)) (= 1 (count freq-vals)))))
+  (let [freq-vals (vals (frequencies (map :rank hand)))]
+    (= '(2 2) freq-vals)))
 
 (defn -main []
     (let [deck (create-deck)
