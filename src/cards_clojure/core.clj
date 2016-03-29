@@ -22,16 +22,33 @@
       
 (defn flush? [hand]
   (= 1 (count (set (map :suit hand)))))   
+
 (defn straight? [hand]
   (let [hand-ranks (sort (map :rank hand))
         first (first hand-ranks)
         last (last hand-ranks)]
-    (= 3 (- last first))))
+    (and (= 4 (count (set hand-ranks))) (= 3 (- last first)))))
 (defn straight-flush? [hand]
   (and (straight? hand) (flush? hand)))
+
+(defn four-of-a-kind? [hand]
+  (= 1 (count (set (map :rank hand)))))
+
+(defn three-of-a-kind? [hand]
+  (let [freq-vals (set (vals (frequencies (map :rank hand))))]
+    (and (not= (first freq-vals) (last freq-vals)) (= 4 (+ (first freq-vals) (last freq-vals))))))
+
+(defn two-of-a-kind? [hand]
+  (let [freq-vals (set (vals (frequencies (map :rank hand))))]
+    (= 3 (+ (first freq-vals) (last freq-vals)))))
+
+(defn two-pair? [hand]
+  (let [freq-vals (set (vals (frequencies (map :rank hand))))]
+    (and (= 2 (first freq-vals)) (= 1 (count freq-vals)))))
+
 (defn -main []
     (let [deck (create-deck)
           hands (create-hands deck)
-          flush-hands (filter straight-flush? hands)]
-      (println (count flush-hands))))
-    
+          flush-hands (set (filter two-pair? hands))]
+      (println (count flush-hands))
+      (println (count (set hands)))))
